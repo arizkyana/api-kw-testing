@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Illuminate\Http\Request;
 
-class ChecklistsService extends Controller
+class ChecklistsService
 {
     public function __construct(){}
     
@@ -16,25 +16,8 @@ class ChecklistsService extends Controller
         $pageOffset = $queries->page_offset;
         
         // TODO: Query to database here
-        $checklists = [
-        'meta' => [
-        'count' => $pageLimit,
-        'total' => 100,
-        ],
-        'links' => [
-        "first" => "https://kong.command-api.kw.com/api/v1/checklists/templates?page[limit]=10&page[offset]=0",
-        "last" => "https://kong.command-api.kw.com/api/v1/checklists/templates?page[limit]=10&page[offset]=10",
-        "next" => "https://kong.command-api.kw.com/api/v1/checklists/templates?page[limit]=10&page[offset]=10",
-        "prev" => "null"
-        ],
-        'data' => [
-        'name' => 'foo template',
-        'checklist' => [
-        'description' => 'my checklist',
-        'due_interval' => 3,
-        ]
-        ]
-        ];
+        return ["message" => "ok"];
+        
     }
     public function show(){}
     public function update(){}

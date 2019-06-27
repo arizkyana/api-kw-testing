@@ -12,11 +12,6 @@ class AssignBulkChecklistsTemplateTest extends TestCase
     */
     public function testQueryParamaterCompleted()
     {
-        $this->get('/x');
-        
-        $this->assertEquals(
-        $this->app->version(), $this->response->getContent()
-        );
     }
     
     public function testQueryParameterMissingFilter(){
