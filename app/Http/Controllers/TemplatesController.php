@@ -23,10 +23,26 @@ class TemplatesController extends Controller
         
         $template = $this->service->listAllChecklistTemplate($filter, $sort);
         
-        return ["message" => "template", $template];
+        return $template;
     }
-    public function create(){}
-    public function show(){}
-    public function update(){}
-    public function delete(){}
+    public function create(Request $request){
+        $create = $this->service->createTemplateChecklist($request->input());
+        return $create;
+    }
+    public function show(Request $request, $templateId){
+        $template = $this->service->getChecklistTemplateByTemplateId($templateId);
+        return $template;
+    }
+    public function update(Request $request, $templateId){
+        $update = $this->service->updateTemplateChecklist($request->input(), $templateId);
+        return $update;
+    }
+    public function delete(Request $request, $templateId){
+        $delete = $this->service->deleteTemplateChecklist($templateId);
+        return $delete;
+    }
+    public function assigns(Request $request, $templateId){
+        $assigns = $this->service->assignsBulkChecklist($request->input(), $templateId);
+        return $assigns;
+    }
 }
