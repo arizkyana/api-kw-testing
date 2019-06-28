@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Utils\RequestParser;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use App\Services\TemplatesService;
 
 class TemplatesController extends Controller
@@ -23,29 +24,28 @@ class TemplatesController extends Controller
         $filter = $this->filtering($request->query('filter'));
         $sort = $this->sorting($request->query('sort'));
         
-        
         $template = $this->service->listAllChecklistTemplate($filter, $sort, $limit);
         
-        return $template;
+        return response()->json($template, Response::HTTP_OK);
     }
     public function create(Request $request){
         $create = $this->service->createTemplateChecklist($request->input());
-        return $create;
+        return response()->json($create, Response::HTTP_CREATED);
     }
     public function show(Request $request, $templateId){
         $template = $this->service->getChecklistTemplateByTemplateId($templateId);
-        return $template;
+        return response()->json($template, Response::HTTP_FOUND);
     }
     public function update(Request $request, $templateId){
         $update = $this->service->updateTemplateChecklist($request->input(), $templateId);
-        return $update;
+        return response()->json($update, Response::HTTP_ACCEPTED);
     }
     public function delete(Request $request, $templateId){
-        $delete = $this->service->deleteTemplateChecklist($templateId);
-        return $delete;
+        $this->service->deleteTemplateChecklist($templateId);
+        return response('', Response::HTTP_NO_CONTENT);
     }
     public function assigns(Request $request, $templateId){
         $assigns = $this->service->assignsBulkChecklist($request->input(), $templateId, $request->user());
-        return $assigns;
+        return response()->json($assigns, Response::HTTP_CREATED);
     }
 }

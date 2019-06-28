@@ -14,52 +14,24 @@ use Illuminate\Auth\GenericUser;
 |
 */
 
-$router->get('/', function (Request $request) {
-    // return $router->app->version();
-    $user = new GenericUser(['id' => 1, 'name' => 'Agung']);
-    return ['test' => []];
+$router->get('/', function() use ($router) {
+    return $router->app->version();
 });
 
+$router->post('/e', function() use ($router) {
+    return $router->app->versio();
+});
 
-$router->get('/checklists/templates', 'TemplatesController@index');
-$router->post('/checklists/templates', 'TemplatesController@create');
-$router->get('/checklists/templates/{templateId}', 'TemplatesController@show');
-$router->patch('/checklists/templates/{templateId}', 'TemplatesController@update');
-$router->delete('/checklists/templates/{templateId}', 'TemplatesController@delete');
-$router->post('/checklists/templates/{templateId}/assigns', 'TemplatesController@assigns');
-
-
-// $router->get('/checklists/histories/{historyId}', 'HistoryController@show');
-// $router->get('/checkslits/histories', 'HistoryController@index');
-
-
-// $router->group(['prefix' => 'checklists'], function() use ($router) {
-
-
-// checklists
-// $router->get('/', 'ChecklistsController@index');
-// $router->get('/{checklistId}', 'ChecklistsController@show');
-// $router->patch('/{checklistId}', 'ChecklistsController@update');
-// $router->delete('/{checklistId}', 'ChecklistsController@delete');
-// $router->post('/', 'ChecklistsController@create');
-
-// // items
-// $router->post('/complete', 'ItemsController@complete');
-// $router->post('/incomplete', 'ItemsController@incomplete');
-// $router->get('/{checklistId}/items', 'ItemsController@byChecklistId');
-// $router->post('/{checklistId}/items', 'ItemsController@create');
-// $router->get('/{checklistId}/items/{itemId}', 'ItemsController@byChecklistIdAndItemId');
-// $router->patch('/{checklistId}/items/{itemId}', 'ItemsController@updateByChecklistIdAndItemId');
-// $router->delete('/{checklistId}/items/{itemId}', 'ItemsController@deleteByChecklistIdAndItemId');
-// $router->patch('/{checklistId}/items/_bulk', 'ItemsController@updateBulkByChecklistId');
-// $router->get('/items/summaries', 'ItemsController@summaries');
-
-// // history
-
-
-
-// template
-
-
-
-// });
+// templates
+$router->group(['prefix' => 'api/v1'], function() use ($router){
+    $router->get('/checklists/templates', 'TemplatesController@index');
+    $router->post('/checklists/templates', 'TemplatesController@create');
+    $router->get('/checklists/templates/{templateId}', 'TemplatesController@show');
+    $router->patch('/checklists/templates/{templateId}', 'TemplatesController@update');
+    $router->delete('/checklists/templates/{templateId}', 'TemplatesController@delete');
+    $router->post('/checklists/templates/{templateId}/assigns', 'TemplatesController@assigns');
+    
+    // items
+    $router->post('/checklists/complete', 'ItemsController@complete');
+    $router->post('/checklists/incomplete', 'ItemsController@incomplete');
+});

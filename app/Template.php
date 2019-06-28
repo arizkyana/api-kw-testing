@@ -23,4 +23,12 @@ class Template extends Model
     {
         return $this->hasOne('App\TemplateChecklist', 'template_id', 'id');
     }
+    
+    public function getAttrAttribute(){
+        return [
+        'name' => $this->name,
+        'checklist' => $this->checklist,
+        'items' => $this->items
+        ];
+    }
 }

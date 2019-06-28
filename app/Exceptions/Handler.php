@@ -47,12 +47,22 @@ class Handler extends ExceptionHandler
     {
         $rendered = parent::render($request, $e);
         
+        if ($rendered->getStatusCode() == 400){
+            $error = 'Bad request';
+        }
+        
+        if ($rendered->getStatusCode() == 401){
+            $error = 'Unauthorized';
+        }
+        
+        if ($rendered->getStatusCode() == 500){
+            $error = 'Server error';
+        }
+        
         return response()->json([
-        'error' => [
-        'code' => $rendered->getStatusCode(),
-        'message' => $e->getMessage(),
-        ]
-        ]);
+        'status' => $rendered->getStatusCode(),
+        'error' => $e->getMessage(),
+        ], $rendered->getStatusCode());
         
     }
 }
