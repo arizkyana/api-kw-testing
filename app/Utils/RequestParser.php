@@ -91,4 +91,19 @@ trait RequestParser {
         
         return $str;
     }
+    
+    public function limit($query){
+        if (isset($query['limit']) && isset($query['offset'])){
+            if(intval($query['limit']) > 0 && intval($query['offset']) >= 0) {
+                return " LIMIT {$query['limit']},{$query['offset']} ";
+            } else {
+                abort(400, 'page limit and offset must more than 0');
+            }
+        } else {
+            abort(400, 'page limit and offset are required');
+        }
+        
+        
+        
+    }
 }

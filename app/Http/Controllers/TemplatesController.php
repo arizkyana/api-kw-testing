@@ -14,14 +14,17 @@ class TemplatesController extends Controller
     protected $service;
     
     public function __construct(TemplatesService $service) {
+        $this->middleware('auth');
         $this->service = $service;
     }
     
     public function index(Request $request){
+        $limit = $this->limit($request->query('page'));
         $filter = $this->filtering($request->query('filter'));
         $sort = $this->sorting($request->query('sort'));
         
-        $template = $this->service->listAllChecklistTemplate($filter, $sort);
+        
+        $template = $this->service->listAllChecklistTemplate($filter, $sort, $limit);
         
         return $template;
     }
@@ -42,7 +45,7 @@ class TemplatesController extends Controller
         return $delete;
     }
     public function assigns(Request $request, $templateId){
-        $assigns = $this->service->assignsBulkChecklist($request->input(), $templateId);
+        $assigns = $this->service->assignsBulkChecklist($request->input(), $templateId, $request->user());
         return $assigns;
     }
 }

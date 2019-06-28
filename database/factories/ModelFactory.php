@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Hash;
+
 /*
 |--------------------------------------------------------------------------
 | Model Factories
@@ -45,5 +48,14 @@ $factory->define(App\TemplateChecklist::class, function(Faker\Generator $faker){
     'due_interval' => $faker->numberBetween(1,3),
     'due_unit' => 'minute',
     'template_id' => 1
+    ];
+});
+
+$factory->define(App\User::class, function(Faker\Generator $faker){
+    return [
+    'name' => $faker->name,
+    'email' => $faker->unique->safeEmail(),
+    'api_token' => Hash::make('api-token'),
+    'password' => Hash::make('12341234')
     ];
 });

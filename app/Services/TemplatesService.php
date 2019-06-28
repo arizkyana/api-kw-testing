@@ -16,9 +16,10 @@ class TemplatesService
     protected $TABLE_TEMPLATE = 'table_template';
     protected $TABLE_TEMPLATE_ITEM = 'table_template_item';
     
-    public function listAllChecklistTemplate($filter, $sort){
-        $template = Template::with('items')->with('checklist')->get();
-        $template_count = Template::count();
+    public function listAllChecklistTemplate($filter, $sort, $limit){
+        return ['filter' => $filter, 'sort' => $sort, 'limit' => $limit];
+        $template = Template::with('items')->with('checklist');
+        $template_count = $template->count();
         return [
         'meta' => [
         'total' => $template_count,
@@ -26,13 +27,13 @@ class TemplatesService
         ],
         
         "links" => [
-        "first" => "https://kong.command-api.kw.com/api/v1/checklists/templates?page[limit]=10&page[offset]=0",
-        "last" => "https://kong.command-api.kw.com/api/v1/checklists/templates?page[limit]=10&page[offset]=10",
-        "next" => "https://kong.command-api.kw.com/api/v1/checklists/templates?page[limit]=10&page[offset]=10",
+        "first" => "/templates?page[limit]=10&page[offset]=0",
+        "last" => "/templates?page[limit]=10&page[offset]=10",
+        "next" => "/templates?page[limit]=10&page[offset]=10",
         "prev" => "null"
         ],
         
-        'data' => $template
+        'data' => $template->get()
         ];
         // return "SELECT * FROM {$this->TABLE_TEMPLATE} WHERE " . $filter['attr'] . $filter['str'] . $sort;
     }
@@ -148,11 +149,12 @@ class TemplatesService
         
     }
     
-    public function assignsBulkChecklist($body, $templateId){
+    public function assignsBulkChecklist($body, $templateId, $user){
         
         $assigns = $body['data'];
         
         $checklists = [];
+        $included = [];
         
         $template = Template::find($templateId);
         
@@ -163,10 +165,10 @@ class TemplatesService
             
             $checklist->description = $template->checklist->description;
             $checklist->due = Carbon::now()->add($template->checklist->due_interval, $template->checklist->due_unit);
-            $checklist->created_by = 10; // TODO: from auth user
+            $checklist->created_by = $user->id; // TODO: from auth user
             $checklist->save();
             
-            $checklist->links = $checklist->links;
+            // $checklist->links = $checklist->links;
             
             
             // compose items
@@ -176,15 +178,27 @@ class TemplatesService
                 $_item->description = $item['description'];
                 $_item->due = Carbon::now()->add($item['due_interval'], $item['due_unit']);
                 $_item->urgency = $item['urgency'];
+                $_item->assignee_id = $user->id;
                 $_item->save();
+                
+                array_push($included, [
+                'type' => "items",
+                'id' => $_item->id,
+                'attributes' => $_item,
+                'links' =>[
+                'self' => "/items/{$_item->id}"
+                ]
+                ]);
             }
             
-            $checklist->items = $checklist->items;
+            // $checklist->items = $checklist->items;
             
             array_push($checklists, [
             'type' => 'checklists',
             'id' => $checklist->id,
-            'attributes' => $checklist
+            'attributes' => $checklist,
+            'links' => $checklist->links,
+            'relationships' => $checklist->relationships
             ]);
             
         }
@@ -194,7 +208,8 @@ class TemplatesService
         'count' => count($assigns),
         'total' => count($assigns),
         ],
-        'data' => $checklists
+        'data' => $checklists,
+        'included' => $included
         ];
     }
 }

@@ -1,5 +1,8 @@
 <?php
 
+use Illuminate\Http\Request;
+use Illuminate\Auth\GenericUser;
+
 /*
 |--------------------------------------------------------------------------
 | Application Routes
@@ -11,8 +14,10 @@
 |
 */
 
-$router->get('/', function () use ($router) {
-    return $router->app->version();
+$router->get('/', function (Request $request) {
+    // return $router->app->version();
+    $user = new GenericUser(['id' => 1, 'name' => 'Agung']);
+    return ['test' => []];
 });
 
 

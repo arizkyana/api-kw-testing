@@ -23,4 +23,24 @@ class Checklist extends Model
     {
         return $this->hasMany('App\Item', 'checklist_id', 'id');
     }
+    
+    public function getRelationshipsAttribute(){
+        $items = [];
+        foreach($this->items as $item){
+            array_push($items, [
+            'type' => "items",
+            'id' => $item->id
+            ]);
+        }
+        return [
+        'items' => [
+        'links' => [
+        'self' => "/checklists/{$this->id}/relationships/items",
+        'related' => "/checklists/{$this->id}/items"
+        ],
+        'data' => $items
+        ]
+        
+        ];
+    }
 }
